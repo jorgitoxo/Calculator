@@ -2,7 +2,6 @@ let leftOperand = 0;
 let rightOperand = 0;
 let operator;
 
-
 const add = function(leftOperand, rightOperand) {
     return leftOperand + rightOperand;
 };
@@ -12,7 +11,6 @@ const subtract = function(leftOperand, rightOperand) {
 };
 
 const multiply = function(leftOperand, rightOperand) {
-    // return arr.reduce((total, num) => total * num);
     return leftOperand * rightOperand;
 };
 
