@@ -23,21 +23,12 @@ const operate = (operator, leftOperand, rightOperand) => {
     : operator === '-' ? subtract(leftOperand, rightOperand)
     : operator === '*' ? multiply(leftOperand, rightOperand)
     : operator === '/' ? divide(leftOperand, rightOperand)
-    : 0;
+    : "Not a valid operator";
 }
 
-const resetValues = function() {
-    leftOperand = '';
-    rightOperand = '';
-    operator = '';
-}
-
-const clearDisplay = function() {
-    lastOperation.innerText = '';
-    currentOperation.innerText = '';
-}
-
+const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
 const backspaceDisplay = () => currentOperation.innerText = currentOperation.innerText.slice(0, -1);
+const resetValues = () => {leftOperand = '', rightOperand = '', operator = ''};
 
 const evaluateOperation = function() {
     if (leftOperand === '')
@@ -50,9 +41,11 @@ const evaluateOperation = function() {
         rightOperand = parseInt(currentOperation.innerText);
     }
 
-    operationResult = operate(operator, leftOperand, rightOperand);
     clearDisplay();
-    currentOperation.innerText = operationResult;
+    operationResult = operate(operator, leftOperand, rightOperand);
+    (operationResult === "Not a valid operator") ?
+        currentOperation.innerText = rightOperand
+        : currentOperation.innerText = operationResult;
 }
 
 const updateOperator = (e) => {
@@ -74,7 +67,7 @@ const updateOperator = (e) => {
 
 const calculator = function() {
     // Display operations
-    clearButton.addEventListener("click", () => clearDisplay());
+    clearButton.addEventListener("click", () => {clearDisplay(), resetValues()});
     backspaceButton.addEventListener("click", () => backspaceDisplay());
     equalsButton.addEventListener("click",() => evaluateOperation());
     // decimalButton.addEventListener("click", () => ());
