@@ -1,9 +1,18 @@
-let operator = "";
+let operator = '';
+let leftOperand = '';
+let rightOperand = '';
+let operationResult = 0;
+
 let lastOperation = document.getElementById("lastOperationDisplay");
 let currentOperation = document.getElementById("currentOperationDisplay");
 
-let leftOperand = parseInt(lastOperation.innerText);
-let rightOperand = parseInt(currentOperation.innerText);
+const clearButton = document.getElementById("clear");
+const backspaceButton = document.getElementById("backspace");
+const decimalButton = document.getElementById("decimalSeparator")
+const equalsButton = document.getElementById("equalsButton")
+
+const numPad = document.getElementById("numPad");
+const operatorPad = document.getElementById("operators");
 
 const add = (leftOperand, rightOperand) => leftOperand + rightOperand;
 const subtract = (leftOperand, rightOperand) => leftOperand - rightOperand;
@@ -14,64 +23,74 @@ const operate = (operator, leftOperand, rightOperand) => {
     : operator === '-' ? subtract(leftOperand, rightOperand)
     : operator === '*' ? multiply(leftOperand, rightOperand)
     : operator === '/' ? divide(leftOperand, rightOperand)
-    : "Not a valid operator";
+    : 0;
+}
+
+const resetValues = function() {
+    leftOperand = '';
+    rightOperand = '';
+    operator = '';
 }
 
 const clearDisplay = function() {
-    lastOperation.innerText = "";
-    currentOperation.innerText = "";
+    lastOperation.innerText = '';
+    currentOperation.innerText = '';
 }
 
-const backspaceDisplay = function() {
-    currentOperation.innerText = currentOperation.innerText.slice(0, -1);
-}
+const backspaceDisplay = () => currentOperation.innerText = currentOperation.innerText.slice(0, -1);
 
-const updateResult = () => {
-    leftOperand = parseInt(lastOperation.innerText);
-    rightOperand = parseInt(currentOperation.innerText);
-    let operationResult = 0;
+const evaluateOperation = function() {
+    if (leftOperand === '')
+        leftOperand = 0;
+    // leftOperand = parseInt(lastOperation.innerText);
 
-    clearDisplay();
+    if (currentOperation.innerText === '') {
+        rightOperand = 0;
+    } else {
+        rightOperand = parseInt(currentOperation.innerText);
+    }
+
     operationResult = operate(operator, leftOperand, rightOperand);
+    clearDisplay();
     currentOperation.innerText = operationResult;
 }
 
 const updateOperator = (e) => {
-    // lastOperation.innerText = currentOperation.innerText
-    operator = e.target.innerText;
-    leftOperand = parseInt(lastOperation.innerText);
-    rightOperand = parseInt(currentOperation.innerText);
+    operator = e.target.value;
 
-    operationResult = operate(operator, leftOperand, rightOperand);
-    lastOperation.innerText = operationResult;
+    if (currentOperation.innerText !== '') {
+        leftOperand = parseInt(currentOperation.innerText)
+    }
+    clearDisplay();
 
+    if (lastOperation.innerText !== ''){
+        evaluateOperation();
+        updateOperator(e);
+    } else {
+        lastOperation.innerText = leftOperand + operator
+    }
 }
+
 
 const calculator = function() {
     // Display operations
-    const clear = document.getElementById("clear");
-    clear.addEventListener("click", () => clearDisplay(lastOperation, currentOperation));
-    const backspace = document.getElementById("backspace");
-    backspace.addEventListener("click", () => backspaceDisplay(currentOperation));
+    clearButton.addEventListener("click", () => clearDisplay());
+    backspaceButton.addEventListener("click", () => backspaceDisplay());
+    equalsButton.addEventListener("click",() => evaluateOperation());
+    // decimalButton.addEventListener("click", () => ());
 
 
     // Register operands on screen
-    const numPad = document.getElementById("numPad");
     numPad.addEventListener("click", (e) => {
-        if (e.target.value !== undefined && e.target.value !== "=") {
+        if (e.target.value !== undefined)
             currentOperation.innerText += e.target.value
-        } else if (e.target.value === "=") {
-            updateResult();
-        }
     });
 
 
     // Operators
-    const operatorPad = document.getElementById("operators");
     operatorPad.addEventListener("click", (e) => {
-        // operator = e.target.innerText;
-        updateOperator(e);
-        // currentOperation.innerText = ;
+        if (e.target.value !== undefined)
+            updateOperator(e);
     });
 }
 
