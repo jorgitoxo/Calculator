@@ -1,7 +1,7 @@
 let operator = '';
 let leftOperand = '';
 let rightOperand = '';
-let operationResult = 0;
+let operationResult = '';
 
 let lastOperation = document.getElementById("lastOperationDisplay");
 let currentOperation = document.getElementById("currentOperationDisplay");
@@ -41,6 +41,10 @@ const evaluateOperation = function() {
         rightOperand = parseInt(currentOperation.innerText);
 
     clearDisplay();
+    executeOperation();
+}
+
+const executeOperation = function() {
     operationResult = operate(operator, leftOperand, rightOperand);
     (operationResult === "Not a valid operator") ?
         currentOperation.innerText = rightOperand
@@ -48,33 +52,39 @@ const evaluateOperation = function() {
 }
 
 const updateOperator = (e) => {
+    clearDisplay();
     
-    if (lastOperation.innerText !== '') {
-        evaluateOperation();
-        clearDisplay();
-        resetValues();
-        leftOperand = operationResult;
+    if (rightOperand) {
+        leftOperand = operate(operator, leftOperand, rightOperand);
+        operator = e.target.value;
+        rightOperand = currentOperation.innerText;
+        lastOperation.innerText = leftOperand + operator;
+    } else {
         operator = e.target.value;
         lastOperation.innerText = leftOperand + operator
-    } else {
-        leftOperand = parseInt(currentOperation.innerText);
-        operator = e.target.value;
-        clearDisplay();
-        lastOperation.innerText = leftOperand + e.target.value
     }
 }
 
+const updateOperand = function(e) {
+    currentOperation.innerText += e.target.value;
+
+    if (operator === '')
+        leftOperand = parseInt(currentOperation.innerText);
+    else
+        rightOperand = parseInt(currentOperation.innerText);
+}
+
 const calculator = function() {
-    // Display operations
+    // Operations
     clearButton.addEventListener("click", () => {clearDisplay(), resetValues()});
     backspaceButton.addEventListener("click", () => backspaceDisplay());
     equalsButton.addEventListener("click",() => evaluateOperation());
     // decimalButton.addEventListener("click", () => ());
 
-    // Register operands on screen
+    // Operands
     numPad.addEventListener("click", (e) => {
         if (e.target.value !== undefined)
-            currentOperation.innerText += e.target.value
+            updateOperand(e);
     });
 
     // Operators
