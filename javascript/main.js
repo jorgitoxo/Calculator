@@ -45,26 +45,24 @@ const executeOperation = function() {
     if (operator && rightOperand === '') rightOperand = 0;
 
     if (operator === '') {
+        operationResult = leftOperand;
         currentOperation.innerText = leftOperand;
     } else if (operator === "/" && rightOperand === 0) {
         lastOperation.innerText = '';
         setFlag();
         endOfOperationFlag = true;
     } else {
-        leftOperand = operate(operator, leftOperand, rightOperand);
-        // operationResult = operate(operator, leftOperand, rightOperand);
-        // leftOperand = operationResult
+        operationResult = operate(operator, leftOperand, rightOperand);
+        leftOperand = operationResult;
         currentOperation.innerText = leftOperand;
         lastOperation.innerText = '';
         rightOperand = '';
         operator = '';
-        // endOfOperationFlag = true;
     }
 }
 
 const updateOperator = (e) => {
     if (rightOperand === '') {
-        // leftOperand = operationResult;
         operator = e.target.value;
         lastOperation.innerText = leftOperand + operator;
         currentOperation.innerText = '';
@@ -107,6 +105,10 @@ const calculator = function() {
     numPad.addEventListener("click", (e) => {
         if (e.target.value !== undefined) {
             resetFlag();
+            if (operationResult !== '') {
+                currentOperation.innerText = '';
+                operationResult = '';
+            }
             currentOperation.innerText += e.target.value;
             updateOperand(e);
         }
