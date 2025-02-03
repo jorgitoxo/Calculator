@@ -8,8 +8,8 @@ let currentOperation = document.getElementById("currentOperationDisplay");
 
 const clearButton = document.getElementById("clear");
 const backspaceButton = document.getElementById("backspace");
-const decimalButton = document.getElementById("decimalSeparator")
-const equalsButton = document.getElementById("equalsButton")
+const decimalButton = document.getElementById("decimalSeparator");
+const equalsButton = document.getElementById("equalsButton");
 
 const numPad = document.getElementById("numPad");
 const operatorPad = document.getElementById("operators");
@@ -31,37 +31,32 @@ const clearDisplay = () => {lastOperation.innerText = '', currentOperation.inner
 const backspaceDisplay = () => currentOperation.innerText = currentOperation.innerText.slice(0, -1);
 const resetValues = () => {leftOperand = '', rightOperand = '', operator = ''};
 
-const evaluateOperation = function() {
+const executeOperation = function() {
     if (leftOperand === '')
         leftOperand = 0;
 
-    if (currentOperation.innerText === '')
+    if (rightOperand === '')
         rightOperand = 0;
-    else
-        rightOperand = parseInt(currentOperation.innerText);
-
+    
     clearDisplay();
-    executeOperation();
-}
-
-const executeOperation = function() {
     operationResult = operate(operator, leftOperand, rightOperand);
-    (operationResult === "Not a valid operator") ?
-        currentOperation.innerText = rightOperand
+    
+    return (operator === '') ?
+        currentOperation.innerText = leftOperand
         : currentOperation.innerText = operationResult;
 }
 
 const updateOperator = (e) => {
     clearDisplay();
     
-    if (rightOperand) {
+    if (rightOperand !== '') {
         leftOperand = operate(operator, leftOperand, rightOperand);
         operator = e.target.value;
         rightOperand = currentOperation.innerText;
         lastOperation.innerText = leftOperand + operator;
     } else {
         operator = e.target.value;
-        lastOperation.innerText = leftOperand + operator
+        lastOperation.innerText = leftOperand + operator;
     }
 }
 
@@ -78,7 +73,7 @@ const calculator = function() {
     // Operations
     clearButton.addEventListener("click", () => {clearDisplay(), resetValues()});
     backspaceButton.addEventListener("click", () => backspaceDisplay());
-    equalsButton.addEventListener("click",() => evaluateOperation());
+    equalsButton.addEventListener("click",() => executeOperation());
     // decimalButton.addEventListener("click", () => ());
 
     // Operands
