@@ -29,31 +29,35 @@ const operate = (operator, leftOperand, rightOperand) => {
 
 const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
 const backspaceDisplay = () => currentOperation.innerText = currentOperation.innerText.slice(0, -1);
-const resetValues = () => {leftOperand = '', rightOperand = '', operator = ''};
+const clearValues = () => {operator = '', leftOperand = '', rightOperand = '', operationResult = ''};
 
 const executeOperation = function() {
     if (leftOperand === '')
         leftOperand = 0;
-
-    if (rightOperand === '')
+    if (operator && rightOperand === '')
         rightOperand = 0;
-    
+
     clearDisplay();
-    operationResult = operate(operator, leftOperand, rightOperand);
-    
-    return (operator === '') ?
-        currentOperation.innerText = leftOperand
-        : currentOperation.innerText = operationResult;
+
+    if (operator === '') {
+        currentOperation.innerText = leftOperand;
+    } else {
+        leftOperand = operate(operator, leftOperand, rightOperand);;
+        currentOperation.innerText = leftOperand;
+        rightOperand = '';
+        operator = '';
+    }
 }
 
 const updateOperator = (e) => {
     clearDisplay();
     
     if (rightOperand !== '') {
-        leftOperand = operate(operator, leftOperand, rightOperand);
+        operationResult = operate(operator, leftOperand, rightOperand);
+        leftOperand = operationResult;
         operator = e.target.value;
-        rightOperand = currentOperation.innerText;
         lastOperation.innerText = leftOperand + operator;
+        rightOperand = '';
     } else {
         operator = e.target.value;
         lastOperation.innerText = leftOperand + operator;
@@ -71,7 +75,7 @@ const updateOperand = function(e) {
 
 const calculator = function() {
     // Operations
-    clearButton.addEventListener("click", () => {clearDisplay(), resetValues()});
+    clearButton.addEventListener("click", () => {clearDisplay(), clearValues()});
     backspaceButton.addEventListener("click", () => backspaceDisplay());
     equalsButton.addEventListener("click",() => executeOperation());
     // decimalButton.addEventListener("click", () => ());
