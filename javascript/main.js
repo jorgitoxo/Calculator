@@ -27,6 +27,10 @@ const operate = (operator, leftOperand, rightOperand) => {
     : "Not a valid operator";
 }
 
+function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
+
 const setInvalidOperationFlag = () => {currentOperation.innerText = "You, naughty you!!", invalidOperationFlag = true};
 const resetInvalidOperationFlag = () => {
     if (invalidOperationFlag) {
@@ -48,18 +52,21 @@ const backspaceDisplay = () => {
     } else if (currentOperation.innerText === '' && operator) {
         operator = '';
         lastOperation.innerText = lastOperation.innerText.slice(0, -1);
-        leftOperand = (lastOperation.innerText) ? parseInt(lastOperation.innerText) : 0;
+        leftOperand = (lastOperation.innerText) ? parseFloat(lastOperation.innerText) : 0;
     } else {
         lastOperation.innerText = lastOperation.innerText.slice(0, -1);
-        leftOperand = (lastOperation.innerText) ? parseInt(lastOperation.innerText) : 0;
+        leftOperand = (lastOperation.innerText) ? parseFloat(lastOperation.innerText) : 0;
     }
 };
 
-const updateOperand = function(e) {
-    if (operator === '')
-        leftOperand = currentOperation.innerText ? parseInt(currentOperation.innerText) : 0;
-    else
-        rightOperand = currentOperation.innerText ? parseInt(currentOperation.innerText) : 0;
+const updateOperand = function() {
+    if (operator === '') {
+        leftOperand = currentOperation.innerText ? parseFloat(lastOperation.innerText + currentOperation.innerText) : 0;
+        lastOperation.innerText = '';
+        currentOperation.innerText = leftOperand;
+    } else {
+        rightOperand = currentOperation.innerText ? parseFloat(currentOperation.innerText) : 0;
+    }
 }
 
 const evaluateOperands = () => {
@@ -68,8 +75,8 @@ const evaluateOperands = () => {
 }
 
 const executeOperation = function() {
-    clearDisplay();
     evaluateOperands();
+    clearDisplay();
 
     if (operator === "/" && rightOperand === 0) {
         setInvalidOperationFlag();
@@ -78,7 +85,7 @@ const executeOperation = function() {
         currentOperation.innerText = leftOperand
     } else {
         operationResult = operate(operator, leftOperand, rightOperand);
-        leftOperand = operationResult;
+        leftOperand = round(operationResult, 2);
         currentOperation.innerText = leftOperand;
         rightOperand = '';
         operator = '';
@@ -95,11 +102,15 @@ const updateOperator = (e) => {
         lastOperation.innerText = leftOperand + operator;
     } else {
         operationResult = operate(operator, leftOperand, rightOperand);
-        leftOperand = operationResult
+        leftOperand = round(operationResult, 2);
         operator = e.target.value;
         lastOperation.innerText = leftOperand + operator;
         rightOperand = '';
     }
+}
+
+const decimalToggle = () => {
+
 }
 
 const calculator = function() {
@@ -107,7 +118,7 @@ const calculator = function() {
     clearButton.addEventListener("click", () => {clearDisplay(), clearValues()});
     backspaceButton.addEventListener("click", () => backspaceDisplay());
     equalsButton.addEventListener("click",() => executeOperation());
-    // decimalButton.addEventListener("click", () => ());
+    decimalButton.addEventListener("click", () => decimalToggle());
 
     // Operands
     numPad.addEventListener("click", (e) => {
@@ -115,7 +126,7 @@ const calculator = function() {
             resetInvalidOperationFlag();
             if (operationResult !== '') {currentOperation.innerText = '', operationResult = ''};
             currentOperation.innerText += e.target.value;
-            updateOperand(e);
+            updateOperand();
         }
     });
 
