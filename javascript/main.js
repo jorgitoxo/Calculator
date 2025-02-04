@@ -2,14 +2,13 @@ let operator = '';
 let leftOperand = '';
 let rightOperand = '';
 let operationResult = '';
-let endOfOperationFlag = true;
+let invalidOperationFlag = true;
 
 const lastOperation = document.getElementById("lastOperationDisplay");
 const currentOperation = document.getElementById("currentOperationDisplay");
 
 const clearButton = document.getElementById("clear");
 const backspaceButton = document.getElementById("backspace");
-
 const numPad = document.getElementById("numPad");
 const decimalButton = document.getElementById("decimalSeparator");
 const equalsButton = document.getElementById("equalsButton");
@@ -28,54 +27,33 @@ const operate = (operator, leftOperand, rightOperand) => {
     : "Not a valid operator";
 }
 
-const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
+const setInvalidOperationFlag = () => {currentOperation.innerText = "You, naughty you!!", invalidOperationFlag = true};
+const resetInvalidOperationFlag = () => {
+    if (invalidOperationFlag) {
+        clearDisplay();
+        clearValues();
+        invalidOperationFlag = false;
+    }
+}
 
+const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
 const clearValues = () => {operator = '', leftOperand = '', rightOperand = ''};
 
 const backspaceDisplay = () => {
-    resetFlag();
-    if (currentOperation.innerText !== '') { 
-        currentOperation.innerText = currentOperation.innerText.slice(0, -1)
+    resetInvalidOperationFlag();
+
+    if (currentOperation.innerText !== '') {
+        currentOperation.innerText = currentOperation.innerText.slice(0, -1);
         updateOperand();
+    } else if (currentOperation.innerText === '' && operator) {
+        operator = '';
+        lastOperation.innerText = lastOperation.innerText.slice(0, -1);
+        leftOperand = (lastOperation.innerText) ? parseInt(lastOperation.innerText) : 0;
+    } else {
+        lastOperation.innerText = lastOperation.innerText.slice(0, -1);
+        leftOperand = (lastOperation.innerText) ? parseInt(lastOperation.innerText) : 0;
     }
 };
-
-const executeOperation = function() {
-    if (leftOperand === '') leftOperand = 0;
-    if (operator && rightOperand === '') rightOperand = 0;
-
-    if (operator === '') {
-        operationResult = leftOperand;
-        currentOperation.innerText = leftOperand;
-    } else if (operator === "/" && rightOperand === 0) {
-        lastOperation.innerText = '';
-        setFlag();
-        endOfOperationFlag = true;
-    } else {
-        operationResult = operate(operator, leftOperand, rightOperand);
-        leftOperand = operationResult;
-        currentOperation.innerText = leftOperand;
-        lastOperation.innerText = '';
-        rightOperand = '';
-        operator = '';
-    }
-}
-
-const updateOperator = (e) => {
-    if (rightOperand === '') {
-        operator = e.target.value;
-        lastOperation.innerText = leftOperand + operator;
-        currentOperation.innerText = '';
-    } else if (rightOperand === 0 && operator === "/") {
-        setFlag();
-    } else {
-        leftOperand = operate(operator, leftOperand, rightOperand);
-        operator = e.target.value;
-        lastOperation.innerText = leftOperand + operator;
-        currentOperation.innerText = '';
-        rightOperand = '';
-    }
-}
 
 const updateOperand = function(e) {
     if (operator === '')
@@ -84,15 +62,45 @@ const updateOperand = function(e) {
         rightOperand = currentOperation.innerText ? parseInt(currentOperation.innerText) : 0;
 }
 
-const resetFlag = () => {
-    if (endOfOperationFlag) {
-        clearDisplay();
-        clearValues();
-        endOfOperationFlag = false;
+const evaluateOperands = () => {
+    if (leftOperand === '') leftOperand = 0;
+    if (operator && rightOperand === '') rightOperand = 0;
+}
+
+const executeOperation = function() {
+    clearDisplay();
+    evaluateOperands();
+
+    if (operator === "/" && rightOperand === 0) {
+        setInvalidOperationFlag();
+    } else if (operator === '') {
+        operationResult = leftOperand;
+        currentOperation.innerText = leftOperand
+    } else {
+        operationResult = operate(operator, leftOperand, rightOperand);
+        leftOperand = operationResult;
+        currentOperation.innerText = leftOperand;
+        rightOperand = '';
+        operator = '';
     }
 }
 
-const setFlag = () => {currentOperation.innerText = "You, naughty you!!", endOfOperationFlag = true};
+const updateOperator = (e) => {
+    clearDisplay();
+
+    if (rightOperand === 0 && operator === "/") {
+        setInvalidOperationFlag();
+    } else if (rightOperand === '' || operator === '') {
+        operator = e.target.value;
+        lastOperation.innerText = leftOperand + operator;
+    } else {
+        operationResult = operate(operator, leftOperand, rightOperand);
+        leftOperand = operationResult
+        operator = e.target.value;
+        lastOperation.innerText = leftOperand + operator;
+        rightOperand = '';
+    }
+}
 
 const calculator = function() {
     // Operations
@@ -104,11 +112,8 @@ const calculator = function() {
     // Operands
     numPad.addEventListener("click", (e) => {
         if (e.target.value !== undefined) {
-            resetFlag();
-            if (operationResult !== '') {
-                currentOperation.innerText = '';
-                operationResult = '';
-            }
+            resetInvalidOperationFlag();
+            if (operationResult !== '') {currentOperation.innerText = '', operationResult = ''};
             currentOperation.innerText += e.target.value;
             updateOperand(e);
         }
