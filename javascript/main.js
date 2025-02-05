@@ -31,6 +31,8 @@ function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
 
+const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
+const clearValues = () => {operator = '', leftOperand = '', rightOperand = ''};
 const setInvalidOperationFlag = () => {currentOperation.innerText = "You, naughty you!!", invalidOperationFlag = true};
 const resetInvalidOperationFlag = () => {
     if (invalidOperationFlag) {
@@ -39,9 +41,6 @@ const resetInvalidOperationFlag = () => {
         invalidOperationFlag = false;
     }
 }
-
-const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
-const clearValues = () => {operator = '', leftOperand = '', rightOperand = ''};
 
 const backspaceDisplay = () => {
     resetInvalidOperationFlag();
@@ -61,7 +60,9 @@ const backspaceDisplay = () => {
 
 const updateOperand = function() {
     if (operator === '') {
-        leftOperand = currentOperation.innerText ? parseFloat(lastOperation.innerText + currentOperation.innerText) : 0;
+        leftOperand = (currentOperation.innerText !== "-") ?
+                        parseFloat(lastOperation.innerText + currentOperation.innerText)
+                        : 0;
         lastOperation.innerText = '';
         currentOperation.innerText = leftOperand;
     } else {
@@ -98,19 +99,23 @@ const updateOperator = (e) => {
     if (rightOperand === 0 && operator === "/") {
         setInvalidOperationFlag();
     } else if (rightOperand === '' || operator === '') {
-        operator = e.target.value;
+        operator = e;
         lastOperation.innerText = leftOperand + operator;
     } else {
         operationResult = operate(operator, leftOperand, rightOperand);
         leftOperand = round(operationResult, 2);
-        operator = e.target.value;
+        operator = e;
         lastOperation.innerText = leftOperand + operator;
         rightOperand = '';
     }
 }
 
 const decimalToggle = () => {
-
+    if (decimalButton) {
+            decimalButton.disabled = true;
+    } else {
+        decimalButton.disabled = false;
+    }
 }
 
 const calculator = function() {
@@ -118,7 +123,7 @@ const calculator = function() {
     clearButton.addEventListener("click", () => {clearDisplay(), clearValues()});
     backspaceButton.addEventListener("click", () => backspaceDisplay());
     equalsButton.addEventListener("click",() => executeOperation());
-    decimalButton.addEventListener("click", () => decimalToggle());
+    decimalButton.addEventListener("click", () => updateOperand(e));
 
     // Operands
     numPad.addEventListener("click", (e) => {
@@ -126,14 +131,16 @@ const calculator = function() {
             resetInvalidOperationFlag();
             if (operationResult !== '') {currentOperation.innerText = '', operationResult = ''};
             currentOperation.innerText += e.target.value;
-            updateOperand();
+            updateOperand(e.target.value);
         }
     });
 
     // Operators
     operatorPad.addEventListener("click", (e) => {
-        if (e.target.value !== undefined)
-            updateOperator(e);
+        if (e.target.value !== undefined) {
+            resetInvalidOperationFlag();
+            updateOperator(e.target.value);
+        }
     });
 }
 
