@@ -61,7 +61,7 @@ const backspaceDisplay = () => {
 const updateOperand = function() {
     if (operator === '') {
         leftOperand = (currentOperation.innerText !== "-") ?
-                        parseFloat(lastOperation.innerText + currentOperation.innerText)
+                        parseFloat(lastOperation.innerText.replace('', '0') + currentOperation.innerText.replace('', '0'))
                         : 0;
         lastOperation.innerText = '';
         currentOperation.innerText = leftOperand;
