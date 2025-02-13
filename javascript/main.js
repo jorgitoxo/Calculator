@@ -31,17 +31,14 @@ function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
 
-const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
-const clearValues = () => {operator = '', leftOperand = '', rightOperand = ''};
+const clearDisplay = () => { lastOperation.innerText = '', currentOperation.innerText = '' };
+const clearValues = () => { operator = '', leftOperand = '', rightOperand = '' };
 
-const setInvalidOperationFlag = () => {currentOperation.innerText = "You, naughty you!!", lastOperation.innerText = '', invalidOperationFlag = true};
+const setInvalidOperationFlag = () => { clearDisplay(), currentOperation.innerText = "You, naughty you!!", invalidOperationFlag = true };
 const resetInvalidOperationFlag = () => {
-    if (invalidOperationFlag) {
-        clearDisplay();
-        clearValues();
-        invalidOperationFlag = false;
-    }
-}
+    if (invalidOperationFlag)
+        {clearDisplay(), clearValues(), invalidOperationFlag = false}
+};
 
 const backspaceDisplay = () => {
     resetInvalidOperationFlag();
@@ -97,14 +94,12 @@ const executeOperation = function() {
     
     if (operator === '') {
         operationResult = leftOperand;
-        currentOperation.innerText = leftOperand;
     } else {
         operationResult = operate(operator, leftOperand, rightOperand);
+        clearValues();
         leftOperand = round(operationResult, 2);
-        currentOperation.innerText = leftOperand;
-        rightOperand = '';
-        operator = '';
     }
+    currentOperation.innerText = leftOperand;
 }
 
 const updateOperator = (e) => {
