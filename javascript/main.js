@@ -2,7 +2,7 @@ let operator = '';
 let leftOperand = '';
 let rightOperand = '';
 let operationResult = '';
-let invalidOperationFlag = true;
+let invalidOperationFlag = false;
 
 const lastOperation = document.getElementById("lastOperationDisplay");
 const currentOperation = document.getElementById("currentOperationDisplay");
@@ -33,7 +33,8 @@ function round(value, decimals) {
 
 const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = ''};
 const clearValues = () => {operator = '', leftOperand = '', rightOperand = ''};
-const setInvalidOperationFlag = () => {currentOperation.innerText = "You, naughty you!!", invalidOperationFlag = true};
+
+const setInvalidOperationFlag = () => {currentOperation.innerText = "You, naughty you!!", lastOperation.innerText = '', invalidOperationFlag = true};
 const resetInvalidOperationFlag = () => {
     if (invalidOperationFlag) {
         clearDisplay();
@@ -47,43 +48,56 @@ const backspaceDisplay = () => {
 
     if (currentOperation.innerText !== '') {
         currentOperation.innerText = currentOperation.innerText.slice(0, -1);
-        updateOperand();
     } else if (currentOperation.innerText === '' && operator) {
         operator = '';
         lastOperation.innerText = lastOperation.innerText.slice(0, -1);
-        leftOperand = (lastOperation.innerText) ? parseFloat(lastOperation.innerText) : 0;
+        currentOperation.innerText = lastOperation.innerText;
+        lastOperation.innerText = '';
     } else {
         lastOperation.innerText = lastOperation.innerText.slice(0, -1);
-        leftOperand = (lastOperation.innerText) ? parseFloat(lastOperation.innerText) : 0;
     }
+    updateOperand();
 };
 
-const updateOperand = function() {
-    if (operator === '') {
-        leftOperand = (currentOperation.innerText !== "-") ?
-                        parseFloat(lastOperation.innerText.replace('', '0') + currentOperation.innerText.replace('', '0'))
-                        : 0;
-        lastOperation.innerText = '';
-        currentOperation.innerText = leftOperand;
-    } else {
-        rightOperand = currentOperation.innerText ? parseFloat(currentOperation.innerText) : 0;
-    }
-}
-
-const evaluateOperands = () => {
+const initiateOperands = () => {
     if (leftOperand === '') leftOperand = 0;
     if (operator && rightOperand === '') rightOperand = 0;
 }
 
+const updateOperand = function() {
+    initiateOperands();
+
+    if (operator === '') {
+        leftOperand = (currentOperation.innerText === "-" || currentOperation.innerText === "") ?
+                        0
+                        : parseFloat(lastOperation.innerText + currentOperation.innerText);
+        lastOperation.innerText = '';
+        currentOperation.innerText = leftOperand;
+    } else {
+        rightOperand = currentOperation.innerText ?
+                            parseFloat(currentOperation.innerText)
+                            : 0;
+    }
+}
+const toggleDecimal = () => {
+    if (!currentOperation.innerText.includes('.')) {
+        resetInvalidOperationFlag();
+        currentOperation.innerText += '.'
+    }
+}
+
 const executeOperation = function() {
-    evaluateOperands();
+    initiateOperands();
     clearDisplay();
 
     if (operator === "/" && rightOperand === 0) {
         setInvalidOperationFlag();
-    } else if (operator === '') {
+        return;
+    }
+    
+    if (operator === '') {
         operationResult = leftOperand;
-        currentOperation.innerText = leftOperand
+        currentOperation.innerText = leftOperand;
     } else {
         operationResult = operate(operator, leftOperand, rightOperand);
         leftOperand = round(operationResult, 2);
@@ -94,28 +108,31 @@ const executeOperation = function() {
 }
 
 const updateOperator = (e) => {
-    clearDisplay();
+    if (currentOperation.innerText === '' && e === '-' ) {
+        negativeToggle();
+        return;
+    }
 
-    if (rightOperand === 0 && operator === "/") {
-        setInvalidOperationFlag();
-    } else if (rightOperand === '' || operator === '') {
-        operator = e;
-        lastOperation.innerText = leftOperand + operator;
+    if (operator === '') {
+        initiateOperands();
     } else {
-        operationResult = operate(operator, leftOperand, rightOperand);
-        leftOperand = round(operationResult, 2);
+        executeOperation();
+    }
+
+    if (invalidOperationFlag) {
+        return;
+    } else {
+        clearDisplay();
         operator = e;
         lastOperation.innerText = leftOperand + operator;
-        rightOperand = '';
     }
 }
 
-const decimalToggle = () => {
-    if (decimalButton) {
-            decimalButton.disabled = true;
-    } else {
-        decimalButton.disabled = false;
+const negativeToggle = () => {
+    if (!currentOperation.innerText.includes('-')) {
+        currentOperation.innerText += '-';
     }
+
 }
 
 const calculator = function() {
@@ -123,13 +140,12 @@ const calculator = function() {
     clearButton.addEventListener("click", () => {clearDisplay(), clearValues()});
     backspaceButton.addEventListener("click", () => backspaceDisplay());
     equalsButton.addEventListener("click",() => executeOperation());
-    decimalButton.addEventListener("click", () => updateOperand(e));
+    decimalButton.addEventListener("click", () => toggleDecimal());
 
     // Operands
     numPad.addEventListener("click", (e) => {
         if (e.target.value !== undefined) {
             resetInvalidOperationFlag();
-            if (operationResult !== '') {currentOperation.innerText = '', operationResult = ''};
             currentOperation.innerText += e.target.value;
             updateOperand(e.target.value);
         }
