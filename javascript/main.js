@@ -31,14 +31,30 @@ function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
 
-const clearDisplay = () => { lastOperation.innerText = '', currentOperation.innerText = '' };
-const clearValues = () => { operator = '', leftOperand = '', rightOperand = '' };
+const clearDisplay = () => {
+    lastOperation.innerText = '';
+    currentOperation.innerText = '';
+}
 
-const setInvalidOperationFlag = () => { clearDisplay(), currentOperation.innerText = "You, naughty you!!", invalidOperationFlag = true };
+const clearValues = () => {
+    operator = '';
+    leftOperand = '';
+    rightOperand = '';
+}
+
+const setInvalidOperationFlag = () => {
+    clearDisplay();
+    currentOperation.innerText = "You, naughty you!!";
+    invalidOperationFlag = true;
+}
+
 const resetInvalidOperationFlag = () => {
-    if (invalidOperationFlag)
-        {clearDisplay(), clearValues(), invalidOperationFlag = false}
-};
+    if (invalidOperationFlag) {
+        clearDisplay();
+        clearValues();
+        invalidOperationFlag = false;
+    }
+}
 
 const backspaceDisplay = () => {
     resetInvalidOperationFlag();
@@ -54,7 +70,7 @@ const backspaceDisplay = () => {
         lastOperation.innerText = lastOperation.innerText.slice(0, -1);
     }
     updateOperand();
-};
+}
 
 const initiateOperands = () => {
     if (leftOperand === '') leftOperand = 0;
@@ -65,9 +81,9 @@ const updateOperand = function() {
     initiateOperands();
 
     if (operator === '') {
-        leftOperand = (currentOperation.innerText === "-" || currentOperation.innerText === "") ?
-                        0
-                        : parseFloat(lastOperation.innerText + currentOperation.innerText);
+        leftOperand = (currentOperation.innerText !== "-" && currentOperation.innerText !== "") ?
+                        parseFloat(lastOperation.innerText + currentOperation.innerText)
+                        : 0;
         lastOperation.innerText = '';
         currentOperation.innerText = leftOperand;
     } else {
@@ -76,6 +92,7 @@ const updateOperand = function() {
                             : 0;
     }
 }
+
 const toggleDecimal = () => {
     if (!currentOperation.innerText.includes('.')) {
         resetInvalidOperationFlag();
@@ -124,10 +141,8 @@ const updateOperator = (e) => {
 }
 
 const negativeToggle = () => {
-    if (!currentOperation.innerText.includes('-')) {
+    if (!currentOperation.innerText.includes('-'))
         currentOperation.innerText += '-';
-    }
-
 }
 
 const calculator = function() {
