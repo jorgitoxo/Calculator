@@ -1,0 +1,70 @@
+* {    
+    font-size: 2rem;
+}
+
+#calculator div {
+    /* border: 1px dashed green; */
+    /* margin:  10px; */
+    /* padding:  10px; */
+    background-color: #daf8f4;
+}
+
+#calculator {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    border: 2px solid black;
+}
+
+#display {
+    border: 1.5px solid black;
+}
+
+#keyboard {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#operations {
+    display: flex;
+    flex: 0 0 100%;
+}
+#operations > .operation{
+    display: flex;
+    flex: 1 0 50%;
+}
+
+#Pad {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 0 0 80%;
+}
+
+#numPad {
+    display: flex;
+    flex-wrap: wrap;
+    /* flex: 0 0 100%; */
+    /* width: 6rem; */
+
+}
+
+#numPad > .operand {
+    display: flex;
+    flex: 0 0 30%;
+}
+
+#extraPad {
+    display: flex;
+}
+
+#operators {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 20%;
+}
+
+#operators > .operator {
+    display: flex;
+    flex: auto;
+}
