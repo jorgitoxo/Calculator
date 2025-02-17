@@ -26,23 +26,23 @@
     flex-wrap: wrap;
 }
 
-#operations {
+#keyboard div {
     display: flex;
+}
+
+#operations {
     flex: 0 0 100%;
 }
 #operations > .operation{
-    display: flex;
     flex: 1 0 50%;
 }
 
 #Pad {
-    display: flex;
     flex-wrap: wrap;
     flex: 0 0 80%;
 }
 
 #numPad {
-    display: flex;
     flex-wrap: wrap;
     /* flex: 0 0 100%; */
     /* width: 6rem; */
@@ -50,21 +50,19 @@
 }
 
 #numPad > .operand {
-    display: flex;
+    text-align: left;
     flex: 0 0 30%;
 }
 
 #extraPad {
-    display: flex;
+
 }
 
 #operators {
-    display: flex;
     flex-direction: column;
     flex: 0 0 20%;
 }
 
 #operators > .operator {
-    display: flex;
     flex: auto;
 }
