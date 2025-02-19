@@ -154,7 +154,7 @@ const calculator = function() {
 
     // Operands
     numPad.addEventListener("click", (e) => {
-        if (e.target.value !== undefined) {
+        if (e.target.value !== undefined && e.target.value !== "." && e.target.value !== "=" ) {
             resetInvalidOperationFlag();
             currentOperation.innerText += e.target.value;
             updateOperand(e.target.value);

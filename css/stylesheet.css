@@ -3,17 +3,13 @@
 }
 
 #calculator div {
-    /* border: 1px dashed green; */
-    /* margin:  10px; */
-    /* padding:  10px; */
     background-color: #daf8f4;
 }
 
 #calculator {
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    gap: 10px;
+    /* gap: 10px; */
     border: 2px solid black;
 }
 
@@ -44,18 +40,15 @@
 
 #numPad {
     flex-wrap: wrap;
-    /* flex: 0 0 100%; */
-    /* width: 6rem; */
-
 }
 
 #numPad > .operand {
     text-align: left;
-    flex: 0 0 30%;
+    flex: 1 0 30%;
 }
 
 #extraPad {
-
+    
 }
 
 #operators {
@@ -64,5 +57,5 @@
 }
 
 #operators > .operator {
-    flex: auto;
+
 }
