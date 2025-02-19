@@ -2,6 +2,7 @@
     font-size: 2rem;
 }
 
+/* Calculator */
 #calculator div {
     background-color: #daf8f4;
 }
@@ -9,53 +10,74 @@
 #calculator {
     display: flex;
     flex-direction: column;
-    /* gap: 10px; */
     border: 2px solid black;
+    /*  */
+    width: 80vh;
+    padding: 1rem;
+    gap: 1rem
 }
 
+
+/* Display */
 #display {
     border: 1.5px solid black;
 }
 
+#display > .displayScreen {
+    text-align: right;
+    height: 1em;
+}
+
+
+/* Keyboard */
 #keyboard {
     display: flex;
     flex-wrap: wrap;
+    /* padding: 0.1rem; */
+    /* gap: 0.1rem; */
+    /* width: 800px; */
 }
 
 #keyboard div {
     display: flex;
 }
 
+
+/* Operation */
 #operations {
     flex: 0 0 100%;
 }
+
 #operations > .operation{
     flex: 1 0 50%;
 }
 
-#Pad {
-    flex-wrap: wrap;
-    flex: 0 0 80%;
-}
 
+/* numPad */
 #numPad {
     flex-wrap: wrap;
+    flex: 0 0 80%;
+    /* padding: 0.1rem;
+    gap: 0.1rem */
+}
+
+#numPad > .operand,
+#numPad > .operation {
+    flex: 1 1 30%;
+    
 }
 
 #numPad > .operand {
     text-align: left;
-    flex: 1 0 30%;
 }
 
-#extraPad {
-    
-}
 
+/* Operator */
 #operators {
     flex-direction: column;
-    flex: 0 0 20%;
+    flex: 0 1 20%;
 }
 
 #operators > .operator {
-
+    /* flex: 0 1 100%; */
 }
