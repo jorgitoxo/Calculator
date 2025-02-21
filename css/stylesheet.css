@@ -6,9 +6,9 @@
 * {    
     font-size: 2rem;
     font-family:
-                sans-serif,
+                /* sans-serif,
                 'Micro 5',
-                Wallpoet,
+                Wallpoet, */
                 Audiowide;
 }
 
@@ -50,15 +50,17 @@ button,
                 inset 2px 2px 6px #141414,
                 2px 2px 1px #141414,
                 -2px -2px 1px #141414;
+    color: #242921;
 }
 
 #display > .displayScreen {
     text-align: right;
     height: 1em;
     font-family:
-                Wallpoet,
-                'Micro 5',
-                Audiowide;
+                /* Wallpoet, */
+                /* 'Micro 5', */
+                Audiowide,
+                sans-serif;
 }
 
 #lastOperationDisplay {
@@ -113,6 +115,8 @@ button,
 #backspace {
     /* color: hsl(50, 80%, 45%);; */
     color: hsl(775, 80%, 45%);
+    /* Helps center symbol vertically */
+    padding-top: 15px;
 }
 #backspace:active{
     background: hsl(775, 80%, 45%);
