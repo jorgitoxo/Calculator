@@ -1,42 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Wallpoet:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Micro 5:wght@400;700&display=swap');
+
+
 * {    
     font-size: 2rem;
+    font-family:
+                sans-serif,
+                'Micro 5',
+                Wallpoet,
+                Audiowide;
+}
+
+body{
+    background-color: #1e1e22;
+}
+
+button {
+    cursor: pointer;
+}
+
+button,
+#display {
+    padding: 8px 16px;
+    border-radius: 8px;
 }
 
 /* Calculator */
 #calculator {
     display: flex;
     flex-direction: column;
-    border: 2px solid black;
-    /*  */
-    width: 80vh;
+    border: 1.8px solid rgb(78, 78, 78);
+    border-radius: 8px;
+    width: 70vh;
     padding: 1rem;
-    gap: 1rem
+    gap: 1rem;
+    /*  */
+    background-color: #333;
+    box-shadow: 4px 4px 16px #141414,
+                inset 1px 1px 12px 1px #686868;
 }
 
 
 /* Display */
 #display {
-    border: 1.5px solid black;
-    background-color: #dff3e7;
+    border: 1.8px solid rgb(42, 42, 42);
+    background-image: linear-gradient(to top, #c0dbaf, #707e66);
+    box-shadow: inset -2px -2px 6px #141414,
+                inset 2px 2px 6px #141414,
+                2px 2px 1px #141414,
+                -2px -2px 1px #141414;
 }
 
 #display > .displayScreen {
     text-align: right;
     height: 1em;
+    font-family:
+                Wallpoet,
+                'Micro 5',
+                Audiowide;
+}
+
+#lastOperationDisplay {
+    font-size: 1.1rem;
 }
 
 
 /* Keyboard */
-#keyboard {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    /* row-gap: 0.6rem; */
-}
-
+#keyboard,
 #keyboard div {
     display: flex;
     gap: 0.3rem;
+}
+
+#keyboard,
+#numPad,
+#operators {
+    flex-wrap: wrap;
 }
 
 
@@ -49,30 +89,92 @@
     flex: 1 0 0%;
 }
 
+/* #operations > #clear{
+    background: linear-gradient(
+        to top in oklch,
+        hsl(0, 54%, 47%),
+        hsl(2, 94%, 46%),
+        hsl(3, 100%, 9%)
+    );
+    background-clip: text;
+    color: transparent;
+} */
+
+#clear {
+    /* color: hsl(10, 75%, 40%); */
+    color: hsl(359, 78%, 40%);
+}
+#clear:active {
+    background: hsl(359, 78%, 40%);;
+    border: 1px solid #3d3333;
+    color: rgb(229, 229, 230);
+}
+
+#backspace {
+    /* color: hsl(50, 80%, 45%);; */
+    color: hsl(775, 80%, 45%);
+}
+#backspace:active{
+    background: hsl(775, 80%, 45%);
+    border: 1px solid #777242;
+    color: rgb(36, 36, 37);
+}
 
 /* numPad */
 #numPad {
-    flex-wrap: wrap;
     flex: 0 0 75%;
 }
 
 #numPad > .operand,
 #numPad > .operation {
-    flex: 1 1 30%;
+    flex: 1 0 30%;
     
 }
 
-#numPad > .operand {
-    text-align: left;
+#equalsButton {
+    color: hsl(200, 60%, 40%);
 }
-
+#equalsButton:active {
+    background: hsl(200, 60%, 40%);
+    border: 1px solid rgb(43, 70, 150);
+    color: rgb(229, 229, 230);
+}
 
 /* Operator */
 #operators {
-    flex-wrap: wrap;
     flex: 1 0 0%;
 }
 
 #operators > .operator {
     flex: 0 0 100%;
+}
+
+.operand,
+.operator {
+    background: rgb(27, 27, 27);
+    border: 1px solid rgb(29, 29, 29);
+    color: rgb(229, 229, 230);
+    box-shadow: inset 2px 2px 2px #4e4e4e,
+                3px 3px 2px #000;
+}
+.operand:active,
+.operator:active {
+    background: rgb(46, 46, 46);
+    box-shadow: -2px -2px 1px #141414;
+}
+
+#clear,
+#backspace,
+#equalsButton {
+    background: rgb(27, 27, 27);
+    border: 1px solid rgb(29, 29, 29);
+    box-shadow: inset 2px 2px 2px #4e4e4e,
+                3px 3px 2px #000;
+}
+#clear:active,
+#backspace:active,
+#equalsButton:active {
+    box-shadow: -2px -2px 1px #141414;
+    /* Causes entire layout to move */
+    /* margin: 1px 1px 0; */
 }
