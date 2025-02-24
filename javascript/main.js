@@ -44,7 +44,7 @@ const clearValues = () => {
 
 const setInvalidOperationFlag = () => {
     clearDisplay();
-    currentOperation.innerText = "You, naughty you!!";
+    lastOperation.innerText = "You, naughty you!!";
     invalidOperationFlag = true;
 }
 
@@ -57,8 +57,6 @@ const resetInvalidOperationFlag = () => {
 }
 
 const backspaceDisplay = () => {
-    resetInvalidOperationFlag();
-
     if (currentOperation.innerText !== '') {
         currentOperation.innerText = currentOperation.innerText.slice(0, -1);
     } else if (currentOperation.innerText === '' && operator) {
@@ -77,8 +75,11 @@ const initiateOperands = () => {
     if (operator && rightOperand === '') rightOperand = 0;
 }
 
-const updateOperand = function() {
+const updateOperand = function(e) {
     initiateOperands();
+
+    if (e && currentOperation.innerText.length < 10)
+        currentOperation.innerText += e.target.value;
 
     if (operator === '') {
         leftOperand = (currentOperation.innerText !== "-" && currentOperation.innerText !== "") ?
@@ -93,10 +94,8 @@ const updateOperand = function() {
 }
 
 const toggleDecimal = () => {
-    if (!currentOperation.innerText.includes('.')) {
-        resetInvalidOperationFlag();
+    if (!currentOperation.innerText.includes('.'))
         currentOperation.innerText += '.'
-    }
 }
 
 const executeOperation = function() {
@@ -115,7 +114,20 @@ const executeOperation = function() {
         clearValues();
         leftOperand = round(operationResult, 2);
     }
-    currentOperation.innerText = leftOperand;
+
+    if (isNaN(leftOperand) || leftOperand === Infinity) {
+        invalidOperationFlag = true;
+        lastOperation.innerText = "Out ouf bounds number";
+        return;
+    }
+    
+    if (leftOperand < 1e10) {
+        currentOperation.innerText = leftOperand;
+    } else {
+        currentOperation.innerText = leftOperand.toExponential(2);
+        invalidOperationFlag = true;
+        lastOperation.innerText = "Out ouf bounds number";
+    }
 }
 
 const updateOperator = (e) => {
@@ -124,11 +136,8 @@ const updateOperator = (e) => {
         return;
     }
 
-    if (operator === '') {
-        initiateOperands();
-    } else {
-        executeOperation();
-    }
+    if (operator === '') initiateOperands();
+    else executeOperation();
 
     if (invalidOperationFlag) {
         return;
@@ -147,16 +156,15 @@ const negativeToggle = () => {
 const calculator = function() {
     // Operations
     clearButton.addEventListener("click", () => {clearDisplay(), clearValues()});
-    backspaceButton.addEventListener("click", () => backspaceDisplay());
+    backspaceButton.addEventListener("click", () => {resetInvalidOperationFlag(),backspaceDisplay()});
+    decimalButton.addEventListener("click", () => {resetInvalidOperationFlag(), toggleDecimal()});
     equalsButton.addEventListener("click",() => executeOperation());
-    decimalButton.addEventListener("click", () => toggleDecimal());
 
     // Operands
     numPad.addEventListener("click", (e) => {
         if (e.target.value !== undefined && e.target.value !== "." && e.target.value !== "=" ) {
             resetInvalidOperationFlag();
-            currentOperation.innerText += e.target.value;
-            updateOperand(e.target.value);
+            updateOperand(e);
         }
     });
 
