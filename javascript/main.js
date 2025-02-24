@@ -85,7 +85,6 @@ const updateOperand = function() {
                         parseFloat(lastOperation.innerText + currentOperation.innerText)
                         : 0;
         lastOperation.innerText = '';
-        currentOperation.innerText = leftOperand;
     } else {
         rightOperand = currentOperation.innerText ?
                             parseFloat(currentOperation.innerText)
