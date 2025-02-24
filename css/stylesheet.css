@@ -37,8 +37,9 @@ button,
     gap: 1rem;
     /*  */
     background-color: #333;
-    box-shadow: 4px 4px 16px #141414,
-                inset 1px 1px 12px 1px #686868;
+    box-shadow: 6px 10px 24px 12px #141414,
+                inset 1px 1px 3px #686868,
+                inset -1px -1px 3px #141414;
 }
 
 
