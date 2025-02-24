@@ -86,7 +86,7 @@ const updateOperand = function() {
                         : 0;
         lastOperation.innerText = '';
     } else {
-        rightOperand = currentOperation.innerText ?
+        rightOperand = (currentOperation.innerText !== "-" && currentOperation.innerText !== "") ?
                             parseFloat(currentOperation.innerText)
                             : 0;
     }
