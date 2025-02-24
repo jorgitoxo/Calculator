@@ -156,7 +156,7 @@ const negativeToggle = () => {
 const calculator = function() {
     // Operations
     clearButton.addEventListener("click", () => {clearDisplay(), clearValues()});
-    backspaceButton.addEventListener("click", () => {resetInvalidOperationFlag(),backspaceDisplay()});
+    backspaceButton.addEventListener("click", () => {resetInvalidOperationFlag(), backspaceDisplay()});
     decimalButton.addEventListener("click", () => {resetInvalidOperationFlag(), toggleDecimal()});
     equalsButton.addEventListener("click",() => executeOperation());
 
