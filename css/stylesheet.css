@@ -30,7 +30,6 @@ button,
 #calculator {
     display: flex;
     flex-direction: column;
-    border: 1.8px solid rgb(78, 78, 78);
     border-radius: 8px;
     width: 70vh;
     padding: 1rem;
