@@ -104,32 +104,27 @@ const updateOperand = (e) => {
     if (e && currentOperation.innerText.length < 10)
         currentOperation.innerText += e.target.value;
 
-    if (operator === '') {
-        leftOperand = (currentOperation.innerText !== "-" && currentOperation.innerText !== "") ?
-                        parseFloat(lastOperation.innerText + currentOperation.innerText)
-                        : 0;
+    if (operator === '' && currentOperation.innerText !== "-" && currentOperation.innerText !== "") {
+        leftOperand = parseFloat(lastOperation.innerText + currentOperation.innerText)
         lastOperation.innerText = '';
-    } else {
-        rightOperand = (currentOperation.innerText !== "-" && currentOperation.innerText !== "") ?
-                            parseFloat(currentOperation.innerText)
-                            : 0;
+    } else if (operator !== '' && currentOperation.innerText !== "-" && currentOperation.innerText !== "") {
+        rightOperand = parseFloat(currentOperation.innerText);
     }
 }
 
 const updateOperator = (e) => {
-    linkOperation();
-
     if (currentOperation.innerText === '' && e.target.value === '-' ) {
         toggleNegative();
         return;
     }
-    
+
     if (operator === '') initiateOperands();
     else executeOperation(e);
 
     if (invalidOperationFlag) {
         return;
     } else {
+        linkOperation();
         clearDisplay();
         operator = e.target.value;
         lastOperation.innerText = leftOperand + operator;
@@ -152,19 +147,18 @@ const executeOperation = (e) => {
         clearValues();
     }
 
-    if (operationResult < 1e10) {
+    if (operationResult < 1e10)
         currentOperation.innerText = operationResult;
-    } else if (operationResult > 1e10) {
-        invalidOperationFlag = true;
+    else if (operationResult > 1e10)
         currentOperation.innerText = operationResult.toExponential(2);
-    } else if (isNaN(operationResult) || !isFinite(operationResult)) {
+
+    if (isNaN(operationResult) || !isFinite(operationResult) || operationResult > 1e10)
         invalidOperationFlag = true;
-    }
     
     if (invalidOperationFlag) {
         lastOperation.innerText = "Out ouf bounds number";
-        return
-    } 
+        return;
+    }
 
     if (e.target.value === "=") clearValues();
     else linkOperation();
