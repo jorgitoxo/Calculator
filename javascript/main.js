@@ -37,7 +37,7 @@ const toggleNegative = () => {
 }
 
 const toggleDecimal = () => {
-    if (!currentOperation.innerText.includes('.'))
+    if (!currentOperation.innerText.includes('.') && operationResult === '')
         currentOperation.innerText += '.'
 }
 
@@ -66,6 +66,14 @@ const resetInvalidOperationFlag = () => {
     }
 }
 
+const linkOperation = () => {
+    if (operationResult !== '') {
+        leftOperand = operationResult;
+        operationResult = '';
+        clearDisplay();
+    }
+}
+
 const backspaceDisplay = () => {
     if (currentOperation.innerText !== '') {
         currentOperation.innerText = currentOperation.innerText.slice(0, -1);
@@ -86,8 +94,12 @@ const initiateOperands = () => {
 }
 
 const updateOperand = (e) => {
+    // Counter-intuitive to use linkOperation() since it updates leftOperand
+    // but necessary to clear currentOperation.innerText after an operation
+    // without repeating code, leftOperand will be updated below from a fresh source
+    linkOperation();
     initiateOperands();
-
+    
     if (e && currentOperation.innerText.length < 10)
         currentOperation.innerText += e.target.value;
 
@@ -108,9 +120,10 @@ const updateOperator = (e) => {
         toggleNegative();
         return;
     }
-
+    linkOperation();
+    
     if (operator === '') initiateOperands();
-    else executeOperation();
+    else executeOperation(e);
 
     if (invalidOperationFlag) {
         return;
@@ -121,7 +134,7 @@ const updateOperator = (e) => {
     }
 }
 
-const executeOperation = () => {
+const executeOperation = (e) => {
     initiateOperands();
     clearDisplay();
 
@@ -130,35 +143,37 @@ const executeOperation = () => {
         return;
     }
     
-    if (operator === '') {
+    if (operator === '' && operationResult === '') {
         operationResult = leftOperand;
-    } else {
-        operationResult = operate(operator, leftOperand, rightOperand);
-        clearValues();
-        leftOperand = round(operationResult, 2);
+        currentOperation.innerText = operationResult;
+        return
+    } else if (operator !== '') {
+        operationResult = round(operate(operator, leftOperand, rightOperand), 2);
+    } else  {
+        currentOperation.innerText = operationResult;
     }
 
-    if (isNaN(leftOperand) || leftOperand === Infinity) {
+    if (isNaN(operationResult) || operationResult === Infinity) {
         invalidOperationFlag = true;
         lastOperation.innerText = "Out ouf bounds number";
-        return;
-    }
-    
-    if (leftOperand < 1e10) {
-        currentOperation.innerText = leftOperand;
+    } else if (operationResult < 1e10) {
+        currentOperation.innerText = operationResult;
     } else {
-        currentOperation.innerText = leftOperand.toExponential(2);
+        currentOperation.innerText = operationResult.toExponential(2);
         invalidOperationFlag = true;
         lastOperation.innerText = "Out ouf bounds number";
     }
+
+    if (e.target.value === "=") clearValues();
+    else linkOperation();
 }
 
 const calculator = function() {
     // Operations
-    clearButton.addEventListener("click", () => {clearDisplay(), clearValues()});
+    clearButton.addEventListener("click", () => {clearDisplay(), clearValues(), operationResult = ''});
     backspaceButton.addEventListener("click", () => {resetInvalidOperationFlag(), backspaceDisplay()});
     decimalButton.addEventListener("click", () => {resetInvalidOperationFlag(), toggleDecimal()});
-    equalsButton.addEventListener("click",() => executeOperation());
+    equalsButton.addEventListener("click",(e) => executeOperation(e));
 
     // Operands
     numPad.addEventListener("click", (e) => {
