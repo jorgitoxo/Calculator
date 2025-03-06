@@ -30,22 +30,26 @@ const operate = (operator, leftOperand, rightOperand) => {
 const clearDisplay = () => {lastOperation.innerText = '', currentOperation.innerText = '';}
 const clearValues = () => {operator = '', leftOperand = '', rightOperand = '';}
 
+// Toggle operation for decimal places and/or negative operands
 const toggleOperation = (key) => {
     if (!currentOperation.innerText.includes(key))
         currentOperation.innerText += key;
 }
 
+// Initiates operands to 0
 const initiateOperands = () => {
     if (leftOperand === '' || isNaN(leftOperand)) leftOperand = 0;
     if (operator && (rightOperand === '' || isNaN(rightOperand))) rightOperand = 0;
 }
 
+// Flag up (true) when division by zero cases
 const setInvalidOperationFlag = () => {
     clearDisplay();
     lastOperation.innerText = "You, naughty you!!";
     invalidOperationFlag = true;
 }
 
+// Reset flag down (false) and clear all other values
 const resetInvalidOperationFlag = () => {
     if (invalidOperationFlag) {
         clearDisplay();
@@ -55,6 +59,8 @@ const resetInvalidOperationFlag = () => {
     }
 }
 
+// Passes operation result value on to left operand
+// For when an operation result is to be used as left operand
 const linkOperation = () => {
     if (operationResult !== '' && !isNaN(operationResult) && isFinite(operationResult) && operationResult < 1e10) {
         leftOperand = operationResult;
@@ -63,6 +69,8 @@ const linkOperation = () => {
     }
 }
 
+// Deletes one character at a time based on evaluations
+// Call to updateOperand, registers change on operand values
 const backspaceDisplay = (e) => {
     if (currentOperation.innerText !== '') {
         currentOperation.innerText = currentOperation.innerText.slice(0, -1);
@@ -77,18 +85,27 @@ const backspaceDisplay = (e) => {
     updateOperand(e);
 }
 
+// Registers left and right operand changes
 const updateOperand = (e) => {
-    // Counter-intuitive to use linkOperation() since it updates leftOperand but
-    // necessary to clear currentOperation.innerText after an operation is completed
+    // It seems counter-intuitive to use linkOperation() since it updates leftOperand
+    // but necessary to clear currentOperation.innerText after an operation is completed
     // without repeating code, leftOperand will be updated below from a fresh source
     if (e.target.id === "backspace") operationResult = ''
     else linkOperation();
 
+    // Check for decimal input
+    // Otherwise, check that the display content
+    // does not exceed 10 characters
+    // before appending the new key input
     if (e.target.value === ".")
         toggleOperation(e.target.value);
     else if (e.target.value !== "." && currentOperation.innerText.length < 10)
         currentOperation.innerText += e.target.value;
 
+    // By logic, if there is no operator
+    // then changes must be for the left operand
+    // Once an operator is present, we can assume
+    // changes are for the right operand
     if (operator === '' && currentOperation.innerText !== "-") {
         leftOperand = Math.round(Number(lastOperation.innerText + currentOperation.innerText) * 100) / 100;
         lastOperation.innerText = '';
@@ -97,12 +114,16 @@ const updateOperand = (e) => {
     }
 }
 
+// Registers operator changes
 const updateOperator = (e) => {
     if (currentOperation.innerText === '' && e.target.value === '-' ) {
         toggleOperation(e.target.value);
         return;
     }
 
+    // Case when operator is present
+    // will call on executeOperation()
+    // before updating to the latest operator
     if (operator === '') initiateOperands();
     else executeOperation(e);
 
@@ -120,11 +141,13 @@ const executeOperation = (e) => {
     initiateOperands();
     clearDisplay();
 
+    // First IF deals with division by zero cases
     if (operator === "/" && rightOperand === 0) {
         setInvalidOperationFlag();
         return;
     }
     
+    // Second IF determines the operation result
     if (operator === '' && operationResult === '') {
         operationResult = leftOperand;
     } else if (operator !== '') {
@@ -132,17 +155,21 @@ const executeOperation = (e) => {
         clearValues();
     }
 
+    // Third IF presents the operation result on screen,
+    // ...rounded up when longer than 10 chars
     if (operationResult < 1e10)
         currentOperation.innerText = operationResult;
     else if (operationResult > 1e10)
         currentOperation.innerText = operationResult.toExponential(2);
 
+    // Fourth IF checks that operation result is valid
     if (isNaN(operationResult) || !isFinite(operationResult) || operationResult > 1e10) {
         invalidOperationFlag = true;
         lastOperation.innerText = "Out ouf bounds number";
         return;
     }
 
+    // Fifth IF for when an operation carries on
     if (e.target.value === "=") clearValues();
     else linkOperation();
 }
@@ -156,6 +183,9 @@ const calculator = function() {
     
     // Operands
     numPad.addEventListener("click", (e) => {
+        // "." and "=" need checking out,
+        // as they are present in the element (numPad)
+        // on which this event listener is registerd on
         if (e.target.value !== undefined && e.target.value !== "." && e.target.value !== "=" ) {
             resetInvalidOperationFlag();
             updateOperand(e);
